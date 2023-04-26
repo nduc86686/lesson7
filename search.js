@@ -25,6 +25,7 @@ function search(searchWord, folderPath) {
         }
         return [];
     } else if (stat.isDirectory()) {
+
         // Lấy danh sách các file trong thư mục
         const files = fs.readdirSync(folderPath);
 
@@ -32,29 +33,28 @@ function search(searchWord, folderPath) {
         const result = [];
         for (const file of files) {
             const filePath = path.join(folderPath, file);
-            try {
+            // try {
                 const fileStat = fs.statSync(filePath);
                 if (fileStat.isFile() && path.extname(file) === '.txt') {
                     const content = fs.readFileSync(filePath, 'utf8');
-                    if (content.includes(searchWord)) {
+                    if (content?.includes(searchWord)) {
                         const firstLine = content.trim().split('\n')[0];
                         result.push({fileName: filePath, firstLine: firstLine});
-                        console.log('result', result)
                     }
                 } else if (fileStat.isDirectory()) {
                     // Đệ quy tìm kiếm trong thư mục con
                     const subResult = search(searchWord, filePath);
                     result.push(...subResult);
                 }
-            } catch (err) {
-                console.error(`Lỗi khi đọc file ${folderPath}: ${err.message}`);
-            }
+            // } catch (err) {
+            //     console.error(`Lỗi khi đọc file ${folderPath}: ${err.message}`);
+            // }
         }
 
         return result;
     }
 
 }
-search('fox', './test_files')
+
 module.exports = search;
 
